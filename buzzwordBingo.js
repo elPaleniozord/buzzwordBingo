@@ -32,7 +32,7 @@ const vocabulary = {
 }
 
 class BuzzwordBingo {
-  constructor(adverbs=1, verbs=1, adjectives=1, nouns=1){
+  constructor(adverbs=2, verbs=1, adjectives=3, nouns=1){
     this.vocabulary = vocabulary
     this.config = {
       adverbs: adverbs,
@@ -46,28 +46,34 @@ class BuzzwordBingo {
     return this.generateSentence(this.config)
   }
   
+  checkSeparator (grp, i) {
+    const last = ' and '
+    const second = ', '
+    
+    if(i+2 === grp){
+      return last
+    } else if (i+2 < grp) {
+      return second
+    } else return ' '
+  }
+  
   getRandomWord (grp) {
     const max = this.vocabulary[grp].length
     const random = Math.floor((Math.random() * max) +1)
-    console.log(grp, max)
     return vocabulary[grp][random]
   }
   
   generateSentence(config){
     let words = []
-    let sameGrp = false;
     for(let key in config){
       for(let i=0; i<config[key]; i++){
-        const word = this.getRandomWord(key)
-        sameGrp ? word+',' : null
-        words.push(word)
+        const separator = this.checkSeparator(config[key], i)
+        let word = this.getRandomWord(key)
+        words.push(word+separator)
       }
     }
+    //format string, capitalize, join, trim
     words[0]=words[0].charAt(0).toUpperCase()+words[0].slice(1)
-    return words.join(' ')
+    return words.join('').replace(/\W$/,'.')
   }  
 }
-
-const test = new BuzzwordBingo
-
-console.log(test.get(2,1,0,1))
